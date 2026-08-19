@@ -231,10 +231,6 @@ def save_savings():
     return redirect(url_for('income'))
 
 
-
-
-@app.route('/expense', methods=['GET', 'POST'])
-
 @app.route('/expense', methods=['GET', 'POST'])
 def expense():
     if 'user_id' not in session:
