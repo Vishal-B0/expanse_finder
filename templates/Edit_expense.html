@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Expense | Expense Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #1d2671;
+            font-weight: 600;
+        }
+
+        .back-btn i {
+            margin-right: 6px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #1d2671;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        select {
+            background: white;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #1d2671, #c33764);
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Back Button -->
+    <a href="/expense" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
+    <h2>Edit Expense</h2>
+
+    <form method="POST">
+
+        <label>Amount</label>
+        <input type="number" name="amount" value="{{ data[3] }}" required>
+
+        <label>Date</label>
+        <input type="date" name="date" value="{{ data[4] }}" required>
+
+        <label>Category</label>
+        <select name="category">
+            <option value="Food" {{ 'selected' if data[2]=='Food' }}>Food</option>
+            <option value="Travel" {{ 'selected' if data[2]=='Travel' }}>Travel</option>
+            <option value="Rent" {{ 'selected' if data[2]=='Rent' }}>Rent</option>
+            <option value="Entertainment" {{ 'selected' if data[2]=='Entertainment' }}>Entertainment</option>
+            <option value="Others" {{ 'selected' if data[2]=='Others' }}>Others</option>
+        </select>
+
+        <label>Description</label>
+        <input type="text" name="description" value="{{ data[5] }}">
+
+        <button type="submit">Update Expense</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

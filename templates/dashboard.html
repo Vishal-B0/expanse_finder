@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Expense Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1d2671, #c33764);
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar i {
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+            width: calc(100% - 260px);
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #777;
+            margin-top: 5px;
+        }
+
+        /* Dashboard Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card i {
+            font-size: 30px;
+            margin-bottom: 15px;
+            color: #c33764;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Expense Tracker</h2>
+
+    <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="/income"><i class="fas fa-wallet"></i> Income & Savings</a>
+    <a href="/expense"><i class="fas fa-receipt"></i> Expense Management</a>
+    <a href="/expense_evaluation"><i class="fas fa-chart-pie"></i> Expense Evaluation</a>
+    <a href="/budget"><i class="fas fa-bell"></i> Budget & Alerts</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <div class="header">
+        <h1>Welcome, {{ session['user_name'] }} 👋</h1>
+        <p>Track, analyze, and manage your monthly expenses efficiently</p>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="cards">
+        <div class="card">
+            <i class="fas fa-wallet"></i>
+            <h3>Income & Savings</h3>
+            <p>Manage your monthly income and savings</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-receipt"></i>
+            <h3>Expenses</h3>
+            <p>Add, edit and track your expenses</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-chart-pie"></i>
+            <h3>Analytics</h3>
+            <p>Visualize spending patterns and balance</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-bell"></i>
+            <h3>Budget Alerts</h3>
+            <p>Get notified when you exceed limits</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

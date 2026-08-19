@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Evaluation | Expense Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1d2671, #c33764);
+            color: white;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Content */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+            width: calc(100% - 260px);
+        }
+
+        h2, h3 {
+            margin-bottom: 15px;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        /* Month selector */
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        /* Charts */
+        canvas {
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Expense Tracker</h2>
+    <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="/income"><i class="fas fa-wallet"></i> Income & Savings</a>
+    <a href="/expense"><i class="fas fa-receipt"></i> Expense Management</a>
+    <a href="/expense_evaluation"><i class="fas fa-chart-pie"></i> Expense Evaluation</a>
+    <a href="/budget"><i class="fas fa-bell"></i> Budget & Alerts</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <h2><i class="fas fa-chart-pie"></i> Expense Evaluation</h2>
+
+    <!-- Month Selector -->
+    <div class="card">
+        <form method="get">
+            <label><b>Select Month:</b></label><br><br>
+            <select name="month" onchange="this.form.submit()">
+                {% for m in months %}
+                <option value="{{ m }}" {% if m == selected_month %}selected{% endif %}>
+                    {{ m }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="card">
+        <h3><i class="fas fa-coins"></i> Spent vs Balance</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="card">
+        <h3><i class="fas fa-layer-group"></i> Category-wise Expense</h3>
+        <canvas id="barChart"></canvas>
+    </div>
+
+</div>
+
+<!-- ================= JINJA → JS SAFE VARIABLES ================= -->
+<script>
+    const totalExpense = {{ total_expense | tojson }};
+    const balanceAmount = {{ balance if balance > 0 else 0 | tojson }};
+    const categoryLabels = {{ category_data | map(attribute=0) | list | tojson }};
+    const categoryValues = {{ category_data | map(attribute=1) | list | tojson }};
+</script>
+
+<!-- ================= PIE CHART ================= -->
+<script>
+    new Chart(document.getElementById("pieChart"), {
+        type: 'pie',
+        data: {
+            labels: ['Spent', 'Balance'],
+            datasets: [{
+                data: [totalExpense, balanceAmount],
+                backgroundColor: ['#c33764', '#1d2671']
+            }]
+        }
+    });
+</script>
+
+<!-- ================= BAR CHART ================= -->
+<script>
+    new Chart(document.getElementById("barChart"), {
+        type: 'bar',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                label: 'Expense Amount',
+                data: categoryValues,
+                backgroundColor: '#c33764'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

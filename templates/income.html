@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Income & Savings | Expense Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1d2671, #c33764);
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Content */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+            width: calc(100% - 260px);
+        }
+
+        h2, h3 {
+            margin-bottom: 15px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        /* Forms */
+        form input, form button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        form button {
+            background: linear-gradient(90deg, #1d2671, #c33764);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        form button:hover {
+            opacity: 0.9;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: #1d2671;
+            color: white;
+            padding: 12px;
+        }
+
+        table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background: #f1f1f1;
+        }
+
+        a.action {
+            color: #c33764;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        a.action:hover {
+            text-decoration: underline;
+        }
+
+        /* Summary */
+        .summary p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Expense Tracker</h2>
+    <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="/income"><i class="fas fa-wallet"></i> Income & Savings</a>
+    <a href="/expense"><i class="fas fa-receipt"></i> Expense Management</a>
+    <a href="/expense_evaluation"><i class="fas fa-chart-pie"></i> Expense Evaluation</a>
+    <a href="/budget"><i class="fas fa-bell"></i> Budget & Alerts</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <!-- Add Income -->
+    <div class="card">
+        <h2><i class="fas fa-plus-circle"></i> Add Income</h2>
+        <form method="POST">
+            <input type="number" name="amount" placeholder="Amount" required>
+            <input type="date" name="date" required>
+            <input type="text" name="description" placeholder="Description">
+            <button type="submit">Save Income</button>
+        </form>
+    </div>
+
+    <!-- Income History -->
+    <div class="card">
+        <h2><i class="fas fa-history"></i> Income History</h2>
+        <table>
+            <tr>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            {% for row in income %}
+            <tr>
+                <td>₹{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>
+                    <a class="action" href="/edit_income/{{ row[0] }}">Edit</a> |
+                    <a class="action" href="/delete_income/{{ row[0] }}"
+                       onclick="return confirm('Delete this income?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Monthly Summary -->
+    <div class="card summary">
+        <h3><i class="fas fa-calendar"></i> Latest Month Income Summary</h3>
+        <p><b>Month:</b> {{ latest_month }}</p>
+        <p><b>Total Income:</b> ₹{{ latest_total }}</p>
+    </div>
+
+    <!-- Savings -->
+    <div class="card">
+        <h3><i class="fas fa-piggy-bank"></i> Set Monthly Savings</h3>
+        <form method="POST" action="/save_savings">
+            <input type="month" name="month" required>
+            <input type="number" name="savings" placeholder="Savings Amount" required>
+            <button type="submit">Save Savings</button>
+        </form>
+    </div>
+
+    <!-- Month-wise Income -->
+    <div class="card">
+        <h3><i class="fas fa-table"></i> Month-wise Total Income</h3>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>Total Income</th>
+                <th>Savings</th>
+            </tr>
+            {% for m in monthly_income %}
+            <tr>
+                <td>{{ m[0] }}</td>
+                <td>₹{{ m[1] }}</td>
+                <td>₹{{ m[2] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Budget & Alerts</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1d2671, #c33764);
+            color: white;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+            width: calc(100% - 260px);
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            width: 90%;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .success { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+        .danger  { background: #f8d7da; color: #721c24; }
+        .info    { background: #d1ecf1; color: #0c5460; }
+
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #1d2671;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Expense Tracker</h2>
+    <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="/income"><i class="fas fa-wallet"></i> Income & Savings</a>
+    <a href="/expense"><i class="fas fa-receipt"></i> Expense Management</a>
+    <a href="/expense_evaluation"><i class="fas fa-chart-pie"></i> Expense Evaluation</a>
+    <a href="/budget"><i class="fas fa-bell"></i> Budget & Alerts</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="content">
+
+    <h2>Budget & Alerts ({{ month }})</h2>
+
+    <div class="card">
+        <div class="alert {{ alert_type }}">
+            {{ message }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Current Month Summary</h3>
+        <table>
+            <tr><th>Income</th><td>₹{{ income }}</td></tr>
+            <tr><th>Savings</th><td>₹{{ savings }}</td></tr>
+
+            <tr><th>Available Amount</th><td>₹{{ available }}</td></tr>
+             <tr><th>Expense</th><td>₹{{ expense }}</td></tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
