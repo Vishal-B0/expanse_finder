@@ -5,16 +5,14 @@ from flask import flash
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
-app.secret_key = "secretkey"
+app.secret_key = "ENTER YOUR SECRETKEY HERE"
 
 bcrypt = Bcrypt(app)
-
-# MySQL Connection Function
 def get_db_connection():
     return pymysql.connect(
         host="localhost",
         user="root",
-        password="",
+        password="ENTER YOUR PASSWORD HERE",
         database="expense_tracker"
     )
 
@@ -22,7 +20,6 @@ def get_db_connection():
 def index():
     return render_template("index.html")
 
-# ---------------- REGISTER ----------------
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -46,7 +43,6 @@ def register():
 
     return render_template('registor.html')
 
-# ---------------- LOGIN ----------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -69,7 +65,6 @@ def login():
 
     return render_template('login.html')
 
-# ---------------- DASHBOARD ----------------
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
@@ -77,8 +72,6 @@ def dashboard():
 
     return render_template("dashboard.html")
 
-
-# ---------------- LOGOUT ----------------
 @app.route('/logout')
 def logout():
     session.clear()
@@ -96,7 +89,7 @@ def income():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # ---------- ADD INCOME ----------
+    
     if request.method == 'POST' and 'amount' in request.form:
         amount = request.form['amount']
         date = request.form['date']
@@ -108,14 +101,13 @@ def income():
         )
         conn.commit()
 
-    # ---------- FETCH INCOME HISTORY ----------
+    
     cursor.execute(
         "SELECT * FROM income WHERE user_id=%s ORDER BY income_date DESC",
         (user_id,)
     )
     income_data = cursor.fetchall()
 
-    # ---------- MONTH-WISE TOTAL INCOME ----------
     cursor.execute("""
         SELECT 
             DATE_FORMAT(i.income_date, '%%Y-%%m') AS month,
@@ -136,7 +128,7 @@ def income():
     latest_month = monthly_income[0][0] if monthly_income else None
     latest_month_total = monthly_income[0][1] if monthly_income else 0
 
-    # ---------- FETCH SAVINGS FOR LATEST MONTH ----------
+
     savings_amount = 0
     if latest_month:
         cursor.execute(
@@ -240,7 +232,6 @@ def save_savings():
 
 
 
-#expense are
 
 @app.route('/expense', methods=['GET', 'POST'])
 
@@ -259,10 +250,8 @@ def expense():
         category = request.form['category']
         description = request.form['description']
 
-        # Extract month (YYYY-MM)
         month = datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%m")
 
-        # Fetch total income for that month
         cursor.execute("""
             SELECT IFNULL(SUM(amount),0)
             FROM income
@@ -271,7 +260,6 @@ def expense():
         """, (user_id, month))
         monthly_income = float(cursor.fetchone()[0])
 
-        # Fetch total expense for that month
         cursor.execute("""
             SELECT IFNULL(SUM(amount),0)
             FROM expense
@@ -279,8 +267,7 @@ def expense():
             AND DATE_FORMAT(expense_date, '%%Y-%%m')=%s
         """, (user_id, month))
         monthly_expense = float(cursor.fetchone()[0])
-
-        # Validation
+        
         if monthly_expense + amount > monthly_income:
             flash("Expense exceeds total income for this month!", "danger")
         else:
@@ -293,8 +280,6 @@ def expense():
 
 
 
-
-    # FETCH EXPENSES
     cursor.execute(
         "SELECT * FROM expense WHERE user_id=%s ORDER BY expense_date DESC",
         (user_id,)
@@ -378,12 +363,11 @@ def expense_evaluation():
         return redirect(url_for('login'))
 
     user_id = session['user_id']
-    selected_month = request.args.get('month')  # YYYY-MM
+    selected_month = request.args.get('month') 
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get available months (for dropdown)
     cursor.execute("""
         SELECT DISTINCT DATE_FORMAT(expense_date,'%%Y-%%m')
         FROM expense
@@ -393,9 +377,8 @@ def expense_evaluation():
     months = [row[0] for row in cursor.fetchall()]
 
     if not selected_month and months:
-        selected_month = months[0]  # latest month
+        selected_month = months[0] 
 
-    # Total income for month
     cursor.execute("""
         SELECT IFNULL(SUM(amount),0)
         FROM income
@@ -404,7 +387,6 @@ def expense_evaluation():
     """, (user_id, selected_month))
     total_income = float(cursor.fetchone()[0])
 
-    # Total expense for month
     cursor.execute("""
         SELECT IFNULL(SUM(amount),0)
         FROM expense
@@ -415,7 +397,6 @@ def expense_evaluation():
 
     balance = total_income - total_expense
 
-    # Category-wise expense
     cursor.execute("""
         SELECT category, SUM(amount)
         FROM expense
@@ -446,10 +427,8 @@ def budget():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Current Month
     current_month = datetime.now().strftime("%Y-%m")
 
-    # Total Income
     cursor.execute("""
         SELECT IFNULL(SUM(amount),0)
         FROM income
@@ -457,7 +436,6 @@ def budget():
     """, (user_id, current_month))
     income = float(cursor.fetchone()[0])
 
-    # Total Expense
     cursor.execute("""
         SELECT IFNULL(SUM(amount),0)
         FROM expense
@@ -465,7 +443,6 @@ def budget():
     """, (user_id, current_month))
     expense = float(cursor.fetchone()[0])
 
-    # Savings
     cursor.execute("""
         SELECT IFNULL(savings_amount,0)
         FROM savings
@@ -477,7 +454,6 @@ def budget():
 
     available = income - savings
 
-    # Alert Logic
     if income == 0:
         alert_type = "info"
         message = "No income recorded for this month."
